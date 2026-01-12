@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HM App Icon Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        canvas {
+            border: 2px solid #ddd;
+            margin: 20px 0;
+            background: white;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        .instructions {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HM App Icon Generator</h1>
+        <div class="instructions">
+            <h3>Instructions:</h3>
+            <ol>
+                <li>Upload a harvesting machine image (optional)</li>
+                <li>Click "Generate Icon" to create the icon with "HM" text</li>
+                <li>Click "Download Icon" to save as app_icon.png</li>
+                <li>Place the downloaded file in: assets/images/app_icon.png</li>
+            </ol>
+        </div>
+        
+        <div class="controls">
+            <input type="file" id="imageInput" accept="image/*">
+            <button onclick="generateIcon()">Generate Icon</button>
+            <button onclick="downloadIcon()">Download Icon</button>
+        </div>
+        
+        <canvas id="iconCanvas" width="1024" height="1024"></canvas>
+    </div>
+
+    <script>
+        let uploadedImage = null;
+        const canvas = document.getElementById('iconCanvas');
+        const ctx = canvas.getContext('2d');
+
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        uploadedImage = img;
+                        generateIcon();
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function generateIcon() {
+            // Clear canvas
+            ctx.clearRect(0, 0, 1024, 1024);
+            
+            // Background
+            ctx.fillStyle = '#4CAF50';
+            ctx.fillRect(0, 0, 1024, 1024);
+            
+            // Draw uploaded image if available
+            if (uploadedImage) {
+                const scale = Math.min(1024 / uploadedImage.width, 1024 / uploadedImage.height) * 0.6;
+                const x = (1024 - uploadedImage.width * scale) / 2;
+                const y = (1024 - uploadedImage.height * scale) / 2 - 100;
+                ctx.drawImage(uploadedImage, x, y, uploadedImage.width * scale, uploadedImage.height * scale);
+            }
+            
+            // Draw "HM" text
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 300px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('HM', 512, 700);
+        }
+
+        function downloadIcon() {
+            const link = document.createElement('a');
+            link.download = 'app_icon.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Generate initial icon
+        generateIcon();
+    </script>
+</body>
+</html>
+
