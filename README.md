@@ -1,1 +1,1 @@
-# hours-calculator
+# hours-calculator.
