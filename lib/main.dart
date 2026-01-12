@@ -4,8 +4,20 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'screens/bill_book_screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Hive (NoSQL database) for internal storage
+  await Hive.initFlutter();
+  
+  // Open boxes (collections) for data storage
+  await Hive.openBox('bills');
+  await Hive.openBox('machineOwners');
+  await Hive.openBox('names');
+  await Hive.openBox('villages');
+  
   runApp(const TimeCalculatorApp());
 }
 
